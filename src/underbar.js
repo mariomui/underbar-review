@@ -94,7 +94,7 @@
         answerArr.push(item);
       }
     });
-    console.log(answerArr);
+
     return answerArr;
   };
 
@@ -131,7 +131,6 @@
     for (var key in cache) {
       answerArr.push(cache[key]);
     }
-    console.log(cache);
     return answerArr;
   };
 
@@ -142,9 +141,12 @@
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
     var answerArr = [];
-    for (var i = 0; i < collection.length; i++) {
-      answerArr.push( iterator( collection[i] ) );
+    if (!Array.isArray(collection)) {
+      answerArr = {};
     }
+    _.each(collection, (item) => {
+      answerArr.push( iterator( item ) );
+    });
     return answerArr;
   };
 
@@ -187,6 +189,25 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
+      // accumulator = accumulator || collection[0];
+      //composing 2 variable and makes a 3rd.
+      // accum , item
+      // accum item2
+
+      // noaccumulator loop. 
+      if (accumulator === undefined) {
+        accumulator = collection[0];
+        for ( var i = 1; i < collection.length; i++) {
+          accumulator = iterator( accumulator, collection[i]);
+        }
+      } else {
+        for ( var i = 0; i < collection.length; i++) {
+          accumulator = iterator( accumulator, collection[i]);
+        } 
+      }
+      //else 
+        //second for loop
+      return accumulator;
   };
 
   // Determine if the array or object contains a given value (using `===`).
@@ -195,8 +216,10 @@
     // terms of reduce(). Here's a freebie to demonstrate!
     return _.reduce(collection, function(wasFound, item) {
       if (wasFound) {
+        console.log(item);
         return true;
       }
+      console.log(item);
       return item === target;
     }, false);
   };

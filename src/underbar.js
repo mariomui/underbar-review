@@ -115,14 +115,23 @@
   _.uniq = function(array, isSorted, iterator) {
     var cache = {};
     var answerArr = [];
+
+    iterator = iterator || _.identity;
     //if it's not added to cache, push into arr
-    for (var i = 0; i < array; i++) {
-      if ( !(cache[array[i]]) ) {
-        answerArr.push(array[i]);
-      } else {
-        cache[array[i]] = array[i];
-      }
+    // iterate it, obtain a value, push it in
+    for (var i = 0; i < array.length; i++) {
+      const element = array[i];
+      // [1, 2, 2, 3]
+      // if ( iterator ) {
+        if ( !( iterator(element) in cache ) ) {
+          cache[iterator(element)] = element;
+        }
+      // }
     }
+    for (var key in cache) {
+      answerArr.push(cache[key]);
+    }
+    console.log(cache);
     return answerArr;
   };
 
@@ -132,6 +141,11 @@
     // map() is a useful primitive iteration function that works a lot
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
+    var answerArr = [];
+    for (var i = 0; i < collection.length; i++) {
+      answerArr.push( iterator( collection[i] ) );
+    }
+    return answerArr;
   };
 
   /*

@@ -96,7 +96,8 @@
       it('fails for a collection of all-falsy values', function() {
         // Replace this line with an `expect` statement that tests
         // the behavior described by the `it` string
-        throw new Error('This test is missing.');
+        // throw new Error('This test is missing.');
+        expect(_.every([false, 0, undefined], _.identity)).to.be.false;
       });
 
       it('fails for a collection containing mixed falsy and truthy values', function() {
@@ -154,7 +155,8 @@
       it('should fail for a set containing no matching values', function() {
         // Replace this line with an `expect` statement that tests
         // the behavior described by the `it` string
-        throw new Error('This test is missing.');
+        // throw new Error('This test is missing.');
+        expect(_.some([null, true, 'yes'], _.identity)).to.be.true;
       });
 
       it('should pass for a collection containing one matching value', function() {
@@ -194,7 +196,11 @@
       it('should override properties found on the destination', function() {
         // Replace this line with an `expect` statement that tests
         // the behavior described by the `it` string
-        throw new Error('This test is missing.');
+        // throw new Error('This test is missing.');
+        var destination = { a: 1};
+        var source = { b: 1, a: 3};
+        var extended = _.extend(destination, source);
+        expect(extended.a).to.equal(3);
       });
 
       it('should not override properties not found in the source', function() {
@@ -272,7 +278,13 @@
       it('should copy any property whose key is not already set on the target', function() {
         // Replace this line with an `expect` statement that tests
         // the behavior described by the `it` string
-        throw new Error('This test is missing.');
+        // throw new Error('This test is missing.');
+        var destination = {a: 3, b: 4};
+        var source = {a: 6, c: 5};
+
+        _.defaults(destination, source);
+
+        expect(destination.c).to.equal(5);
       });
 
       it('should not copy a property if that key is already set on the target', function() {

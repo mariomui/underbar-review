@@ -197,13 +197,21 @@
       // noaccumulator loop. 
       if (accumulator === undefined) {
         accumulator = collection[0];
-        for ( var i = 1; i < collection.length; i++) {
-          accumulator = iterator( accumulator, collection[i]);
-        }
+        _.each(collection, (item, index) => {
+          if (index > 0) {
+            accumulator = iterator( accumulator, item );
+          }
+        });
+        // for ( var i = 1; i < collection.length; i++) {
+        //   accumulator = iterator( accumulator, collection[i]);
+        // }
       } else {
-        for ( var i = 0; i < collection.length; i++) {
-          accumulator = iterator( accumulator, collection[i]);
-        } 
+        _.each(collection, (item, index) => {
+          accumulator = iterator( accumulator, item );
+        })
+        // for ( var i = 0; i < collection.length; i++) {
+        //   accumulator = iterator( accumulator, collection[i]);
+        // } 
       }
       //else 
         //second for loop
@@ -228,12 +236,30 @@
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+    iterator = iterator || _.identity;
+    return !!_.reduce(collection, (accum, item, key) => {
+
+      // [ true, true ]
+      //test out item
+      // true && {} >> !{} >> false >> true
+       return accum && iterator(item);
+      // if true return 
+    }, true);
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    iterator = iterator || _.identity;
+    return !!_.reduce(collection, (accum, item, key) => {
+
+      // [ true, true ]
+      //test out item
+      // true && {} >> !{} >> false >> true
+      return accum || iterator(item);
+      // if true return 
+    }, false);
   };
 
 
@@ -255,12 +281,53 @@
   //   }, {
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
+  
+  /* var obj = {
+    a: 4,
+    b: 2,
+  }
+
+  var obj2 = {
+    c: 3,
+    a: 1,
+  }
+  */
+ //example, approach
   _.extend = function(obj) {
+    //arguments
+    var args = [].slice.call(arguments,1);
+
+    //loop through array
+    for (var i = 0; i < args.length; i++) {
+      const currElem = args[i];
+      for ( var key in currElem) {
+        // if ( !( key in obj ) ) {
+          //   obj[key] = currElem[key];
+            obj[key] = currElem[key];
+          // }
+        }
+    }
+
+    return obj;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    var args = [].slice.call(arguments,1);
+
+    //loop through array
+    for (var i = 0; i < args.length; i++) {
+      const currElem = args[i];
+      for ( var key in currElem) {
+        if ( !( key in obj ) ) {
+            obj[key] = currElem[key];
+            // obj[key] = currElem[key];
+          }
+        }
+    }
+
+    return obj;
   };
 
 
@@ -304,6 +371,36 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    // var foo = memorize(func, 1, 2)
+  
+    var cache = {};
+    var flag = true;
+    return function() {
+      var checkArr = function(array) {
+        for (var i = 0; i < array.length; i++) {
+          if (typeof array[i] === 'function') {
+            return false;
+          }
+        }
+        return true;
+      };
+      var args = [].slice.call(arguments);
+      // if (typeof args[0] === 'number') {
+      //   return args[0];
+      // }
+      var stringArgs = JSON.stringify(args);
+      // loop through the arguments
+      if (stringArgs in cache) {
+        return cache[stringArgs];
+      } else {
+       if (checkArr(args) && flag) {
+        cache[stringArgs] = func.apply(this, args);
+        return cache[stringArgs];
+        flag = false;
+       }
+       
+      }
+    };
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -313,6 +410,16 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    //find a way to delay a function
+    //what is the input?
+    var args = Array.prototype.slice.call(arguments,2);
+    //what is the core logic?
+    setTimeout( function () {
+      return func(...args); 
+    }, wait);
+    
+
+    //what is the output?
   };
 
 

@@ -433,7 +433,22 @@
   // TIP: This function's test suite will ask that you not modify the original
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
+  //[1,2,3,4]
   _.shuffle = function(array) {
+    //input
+    var answerArr = array.slice();
+    var flag;
+    //max = 5
+    
+    var randomSeed = Math.floor(Math.random()*((array.length-1)-1));
+    
+    for ( var i = 0; i < array.length; i ++) {
+      const currentElem = answerArr[i];
+      [answerArr[i], answerArr[randomSeed]] = [answerArr[randomSeed],answerArr[i]];
+    }
+
+    //output return an array.
+    return answerArr;
   };
 
 
